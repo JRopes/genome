@@ -1,0 +1,48 @@
+io:
+  absolute_paths: false
+  input_path: "resources/data/brats20"
+  indices_path: "resources/indices/brats20_overfit.yml"
+  output_root_path: "results"
+  resume_path: null
+utility:
+  random_seed: 42
+  pin_memory: true
+  num_workers: 0
+  persistent_workers: false
+  mixed_precision: false
+  pytorch_benchmark: true
+  pytorch_deterministic: true
+  use_tensorbord: true
+  tensorboard_level: "auto"
+  use_tqdm_progress_bar: true
+  zip_at_the_end: true
+general:
+  training: true
+  validate: false
+  experiment_name: "segmentation"
+  experiment_type: "segmentation"
+  epochs: 100
+  batch_size: 1
+  save_epoch_interval: 500
+params:
+  t1_enabled: true
+  t1ce_enabled: false
+  t2_enabled: false
+  flair_enabled: false
+  segmenter:
+    network_type: "Unet"
+    encoder_name: "resnet18"
+    encoder_depth: 3
+    decoder_channels: [128, 64, 32]
+    decoder_use_batchnorm: false
+    criterion:
+      loss_names: ["cross_entropy"]
+      loss_weights: [1.0]
+      cross_entropy:
+        weights: [0.05, 1.0, 1.0, 1.0]
+        reduction: "mean"
+    optimizer:
+      lr: 0.0002
+      beta1: 0.9
+      beta2: 0.999
+      weight_decay: 0

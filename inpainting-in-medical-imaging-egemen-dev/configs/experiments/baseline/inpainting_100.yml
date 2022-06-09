@@ -1,0 +1,60 @@
+io:
+  absolute_paths: false
+  input_path: "resources/data/brats20"
+  indices_path: null
+  output_root_path: "results"
+  resume_path: null
+utility:
+  random_seed: 42
+  pin_memory: true
+  num_workers: 0
+  persistent_workers: false
+  mixed_precision: false
+  pytorch_benchmark: true
+  pytorch_deterministic: true
+  tensorboard_level: "auto"
+  use_tqdm_progress_bar: true
+  zip_at_the_end: true
+general:
+  training: true
+  validate: false
+  experiment_name: "baseline_inpainting 100"
+  experiment_type: "baseline"
+  epochs: 50
+  batch_size: 16
+  save_epoch_interval: 5
+params:
+  shape_segmenter:
+    enabled: false
+  grade_segmenter:
+    enabled: false
+  inpainting:
+    enabled: true
+    generator:
+      optimizer:
+        lr: 0.001
+        beta1: 0.5
+        beta2: 0.999
+        weight_decay: 0
+      scheduler:
+        enabled: false
+        mode: "min"
+        metric_name: ""
+        metric_category: ""
+        metric_stage: "val"
+        factor: 0.1
+        patience: 10
+    discriminator:
+      optimizer:
+        lr: 0.001
+        beta1: 0.5
+        beta2: 0.999
+        weight_decay: 0
+      scheduler:
+        enabled: false
+        mode: "min"
+        metric_name: ""
+        metric_category: ""
+        metric_stage: "val"
+        factor: 0.1
+        patience: 10

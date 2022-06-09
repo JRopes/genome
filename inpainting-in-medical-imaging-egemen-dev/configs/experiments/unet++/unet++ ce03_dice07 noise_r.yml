@@ -1,0 +1,112 @@
+io:
+  absolute_paths: false
+  input_path: "resources/data/brats20"
+  indices_path: "resources/indices/brats20_25p.yml"
+  output_root_path: "results"
+  resume_path: null
+utility:
+  random_seed: 42
+  pin_memory: true
+  num_workers: 4
+  persistent_workers: true
+  mixed_precision: false
+  pytorch_benchmark: true
+  pytorch_deterministic: true
+  use_tensorbord: true
+  tensorboard_level: "auto"
+  use_tqdm_progress_bar: true
+  zip_at_the_end: true
+general:
+  training: true
+  validate: true
+  experiment_name: "unet++ ce03_dice07 noise_r"
+  experiment_type: "custom_mask"
+  epochs: 100
+  batch_size: 32
+  save_epoch_interval: 5
+params:
+  noise:
+    cocentric_circle_values: null
+    cocentric_circle_radiuses:
+      mean: 0
+      std: 0.1
+  shape_segmenter:
+    enabled: true
+    network_type: "Unet++"
+    encoder_name: "resnet18"
+    encoder_depth: 4
+    decoder_channels: [256, 128, 64, 32]
+    decoder_use_batchnorm: false
+    criterion:
+      loss_names: ["cross_entropy", "dice"]
+      loss_weights: [0.3, 0.7]
+      cross_entropy:
+        weights: null
+        reduction: "mean"
+      dice:
+        weights: null
+        ignore_index: null
+        apply_softmax: true
+        reduction: "mean"
+      focal:
+        alpha: 0.5
+        gamma: 2.0
+        reduction: "mean"
+      hausdorff:
+        alpha: 2.0
+        k: 10
+        reduction: "mean"
+    optimizer:
+      lr: 0.0002
+      beta1: 0.9
+      beta2: 0.999
+      weight_decay: 0
+    scheduler:
+      enabled: false
+      mode: "min"
+      metric_name: ""
+      metric_category: "epoch"
+      metric_stage: "val"
+      factor: 0.1
+      patience: 10
+  grade_segmenter:
+    enabled: true
+    network_type: "Unet++"
+    encoder_name: "resnet18"
+    encoder_depth: 4
+    decoder_channels: [256, 128, 64, 32]
+    decoder_use_batchnorm: false
+    criterion:
+      loss_names: ["cross_entropy", "dice"]
+      loss_weights: [0.3, 0.7]
+      cross_entropy:
+        weights: null
+        reduction: "mean"
+      dice:
+        weights: null
+        ignore_index: 0
+        apply_softmax: true
+        reduction: "mean"
+      focal:
+        alpha: 0.5
+        gamma: 2.0
+        reduction: "mean"
+      hausdorff:
+        alpha: 2.0
+        k: 10
+        reduction: "mean"
+    optimizer:
+      lr: 0.0002
+      beta1: 0.9
+      beta2: 0.999
+      weight_decay: 0
+    scheduler:
+      enabled: false
+      mode: "min"
+      metric_name: ""
+      metric_category: "epoch"
+      metric_stage: "val"
+      factor: 0.1
+      patience: 10
+  inpainting:
+    enabled: false
