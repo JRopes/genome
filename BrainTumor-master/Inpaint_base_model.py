@@ -5,6 +5,7 @@ from torch.autograd import Variable
 from torch.nn.modules.batchnorm import _BatchNorm
 from torch.nn.parameter import Parameter
 
+
 class Conv(nn.Module):
     def __init__(self, in_ch, out_ch, K=3, S=1, P=1, D=1, activation=nn.ReLU(inplace=True)):
         super(Conv, self).__init__()
@@ -24,6 +25,7 @@ class Conv(nn.Module):
         x = self.conv(x)
         return x
 
+
 class PartialConv(nn.Module):
     def __init__(self, in_ch, out_ch, K=3, S=1, P=1, D=1, activation=nn.LeakyReLU(inplace=True)):
         super(PartialConv, self).__init__()
@@ -37,9 +39,11 @@ class PartialConv(nn.Module):
                 PartialConv2d(in_ch, out_ch, kernel_size=K, stride=S, padding=P, dilation=D),
                 nn.InstanceNorm2d(out_ch)
             )
+
     def forward(self, x):
         x = self.conv(x)
         return x
+
 
 class SN_Conv(nn.Module):
     def __init__(self, in_ch, out_ch, K=3, S=1, P=1, D=1, activation=nn.ReLU(inplace=True)):
@@ -66,35 +70,38 @@ class ResidualBlock(nn.Module):
     def __init__(self, in_features, K=3, S=1, P=1, D=1, activation=nn.ReLU(inplace=True)):
         super(ResidualBlock, self).__init__()
 
-        conv_block = [  Conv(in_features, in_features, K, S, P, D, activation=activation),
-                        Conv(in_features, in_features, activation=False)]
+        conv_block = [Conv(in_features, in_features, K, S, P, D, activation=activation),
+                      Conv(in_features, in_features, activation=False)]
 
         self.conv_block = nn.Sequential(*conv_block)
 
     def forward(self, x):
         return x + self.conv_block(x)
+
 
 class SN_ResidualBlock(nn.Module):
     def __init__(self, in_features, K=3, S=1, P=1, D=1, activation=nn.LeakyReLU(inplace=True)):
         super(SN_ResidualBlock, self).__init__()
-        conv_block = [  SN_Conv(in_features, in_features, K, S, P, D, activation=activation),
-                        SN_Conv(in_features, in_features, activation=False)]
+        conv_block = [SN_Conv(in_features, in_features, K, S, P, D, activation=activation),
+                      SN_Conv(in_features, in_features, activation=False)]
 
         self.conv_block = nn.Sequential(*conv_block)
 
     def forward(self, x):
         return x + self.conv_block(x)
+
 
 class Partial_ResidualBlock(nn.Module):
     def __init__(self, in_features, K=3, S=1, P=1, D=1, activation=nn.ReLU(inplace=True)):
         super(Partial_ResidualBlock, self).__init__()
-        conv_block = [  PartialConv(in_features, in_features, K, S, P, D, activation=activation),
-                        PartialConv(in_features, in_features, activation=False)]
+        conv_block = [PartialConv(in_features, in_features, K, S, P, D, activation=activation),
+                      PartialConv(in_features, in_features, activation=False)]
 
         self.conv_block = nn.Sequential(*conv_block)
 
     def forward(self, x):
         return x + self.conv_block(x)
+
 
 class PartialConv2d(nn.Conv2d):
     def __init__(self, *args, **kwargs):

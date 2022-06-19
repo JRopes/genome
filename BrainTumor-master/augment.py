@@ -1,28 +1,19 @@
-from fid_score import calculate_fid_given_paths
-from util import *
-from model import Inpaint_generator, Tumor_shape, Tumor_grade
-import shutil
-import math
-import random
-from math import log10
-from dataloader import *
-from losses import *
-import json
 import argparse
-from time import strftime
-import time
+
+from util import *
+import math
+import os
 import pathlib
-from itertools import cycle
-import itertools
-import torchvision.transforms.functional as TF
-import torchvision.models as models
-from torch.autograd import Variable
+
+import torch
+import torchvision.transforms as transforms
 import torchvision.utils as vutils
 from torch.utils.data import DataLoader
-import torchvision.transforms as transforms
-import torch.nn as nn
-import torch
-import os
+
+from dataloader import *
+from model import Inpaint_generator, Tumor_shape, Tumor_grade
+from util import *
+
 os.environ['CUDA_VISIBLE_DEVICES'] = "5"
 parser = argparse.ArgumentParser()
 parser.add_argument('--step', type=int, default=1,
@@ -30,12 +21,16 @@ parser.add_argument('--step', type=int, default=1,
 parser.add_argument('--dataroot', type=str,
                     default='../data/Brain_v5', help='root of the images')
 parser.add_argument('--temp_dataroot', type=str,
-                    default='/home/sunho/PycharmProjects/ksh/venv/data/Brain_v5/Train/Normal_slice/', help='root of the images')
+                    default='/home/sunho/PycharmProjects/ksh/venv/data/Brain_v5/Train/Normal_slice/', help='root of '
+                                                                                                           'the '
+                                                                                                           'images')
 parser.add_argument('--Augment_dir', type=str,
-                    default='/home/sunho/PycharmProjects/ksh/venv/data/Brain_v5/Train/CNN_Augment/Using_Normal_slice/L1_Adv_Cont/', help='directory for save the result')
+                    default='/home/sunho/PycharmProjects/ksh/venv/data/Brain_v5/Train/CNN_Augment/Using_Normal_slice'
+                            '/L1_Adv_Cont/', help='directory for save the result')
 
 
-# parser.add_argument('--resume_path_1', type=str, default='/home/sunho/PycharmProjects/ksh/venv/InpaintGAN/Result/STEP0/model/190/')
+# parser.add_argument('--resume_path_1', type=str,
+# default='/home/sunho/PycharmProjects/ksh/venv/InpaintGAN/Result/STEP0/model/190/')
 parser.add_argument('--resume_path_1', type=str,
                     default='/home/sunho/PycharmProjects/ksh/venv/InpaintGAN/inpaint_result_v7/20190815_1644/model/40/')
 parser.add_argument('--resume_path_2', type=str,
@@ -43,7 +38,7 @@ parser.add_argument('--resume_path_2', type=str,
 
 opt = parser.parse_args()
 print(opt)
-if pathlib.Path('%s' % (opt.dataroot)).exists() == False:
+if not pathlib.Path('%s' % opt.dataroot).exists():
     print("******  Data root is incorrect...******")
 Tensor = torch.cuda.FloatTensor
 
@@ -92,13 +87,14 @@ with torch.no_grad():
                 'level_Circle'].type(Tensor)
             brain = torch.cat((F, T1, T1c, T2), 1)
 
-            # STEP 1: GENERATE VARIOUS BINARY MASK********************************************************************************************
+            # STEP 1: GENERATE VARIOUS BINARY
+            # MASK********************************************************************************************
             if (step == 1) and (j < 100):
 
                 pathlib.Path(aug_dir + "STEP1/%d/inputs/" %
-                             (j)).mkdir(parents=True, exist_ok=True)
+                             j).mkdir(parents=True, exist_ok=True)
                 pathlib.Path(aug_dir + "STEP1/%d/outputs/" %
-                             (j)).mkdir(parents=True, exist_ok=True)
+                             j).mkdir(parents=True, exist_ok=True)
 
                 ran_radius = random.sample(range(1, 40), 3)
                 ran_radius.sort()
@@ -138,9 +134,9 @@ with torch.no_grad():
                 aug_dir = '/home/sunho/PycharmProjects/ksh/venv/Figure/Fig6/'
 
                 pathlib.Path(aug_dir + "_STEP2/%d/inputs/" %
-                             (j)).mkdir(parents=True, exist_ok=True)
+                             j).mkdir(parents=True, exist_ok=True)
                 pathlib.Path(aug_dir + "_STEP2/%d/outputs/" %
-                             (j)).mkdir(parents=True, exist_ok=True)
+                             j).mkdir(parents=True, exist_ok=True)
 
                 ran_center = random.sample(range(60, 190), 2)
                 [x_center, y_center] = ran_center
@@ -169,15 +165,15 @@ with torch.no_grad():
                         ran_radius_second.sort()
                         [radius3_second, radius2_second] = ran_radius_second
 
-                    level_circle = (make_level_circle(x_center, y_center, radius1, (radius2_first*(
-                        10-idx)+radius2_second*(idx))/10, (radius3_first*(10-idx)+radius3_second*(idx))/10)).cuda()
+                    level_circle = (make_level_circle(x_center, y_center, radius1, (radius2_first * (
+                        10-idx) + radius2_second * idx) / 10, (radius3_first * (10 - idx) + radius3_second * idx) / 10)).cuda()
 
-                    grade_mask = qauntize(tumor_grade(
+                    grade_mask = quantize(tumor_grade(
                         torch.cat([binary_mask, level_circle.cuda()], 1)).cpu()).cuda()
                     idx = idx+1
 
-                    print(idx, radius1, (radius2_first*(10-idx)+radius2_second *
-                                         (idx))/10, (radius3_first*(10-idx)+radius3_second*(idx))/10)
+                    print(idx, radius1, (radius2_first * (10-idx) + radius2_second *
+                                         idx) / 10, (radius3_first * (10 - idx) + radius3_second * idx) / 10)
 
                     if i == 0:
                         inputs = level_circle
@@ -192,9 +188,9 @@ with torch.no_grad():
 
                 if j < 100:
                     vutils.save_image(
-                        inputs, filename=aug_dir + '_STEP2/%d_inputs_.png' % (j), nrow=5)
+                        inputs, filename=aug_dir + '_STEP2/%d_inputs_.png' % j, nrow=5)
                     vutils.save_image(
-                        outputs, filename=aug_dir + '_STEP2/%d_outputs_.png' % (j), nrow=5)
+                        outputs, filename=aug_dir + '_STEP2/%d_outputs_.png' % j, nrow=5)
 
                     j = j+1
                     print(j)
@@ -230,25 +226,26 @@ with torch.no_grad():
                     binary_mask4 = unify(tumor_shape(
                         torch.cat([uni_B, binary_circle4], 1)).cpu()).cuda()
 
-                    grade_mask1 = qauntize(tumor_grade(
+                    grade_mask1 = quantize(tumor_grade(
                         torch.cat([binary_mask1, level_circle1.cuda()], 1)).cpu()).cuda()
-                    grade_mask2 = qauntize(tumor_grade(
+                    grade_mask2 = quantize(tumor_grade(
                         torch.cat([binary_mask2, level_circle2.cuda()], 1)).cpu()).cuda()
-                    grade_mask3 = qauntize(tumor_grade(
+                    grade_mask3 = quantize(tumor_grade(
                         torch.cat([binary_mask3, level_circle3.cuda()], 1)).cpu()).cuda()
-                    grade_mask4 = qauntize(tumor_grade(
+                    grade_mask4 = quantize(tumor_grade(
                         torch.cat([binary_mask4, level_circle4.cuda()], 1)).cpu()).cuda()
 
                     # if (torch.sum(binary_mask1 * (1 - uni_B)) == 0):
-                    if (torch.sum(binary_mask1 * (1 - uni_B)) == 0) & (torch.sum(binary_mask2 * (1 - uni_B)) == 0) & (torch.sum(binary_mask3 * (1 - uni_B)) == 0) & (torch.sum(binary_mask4 * (1 - uni_B)) == 0):
+                    if (torch.sum(binary_mask1 * (1 - uni_B)) == 0) & (torch.sum(binary_mask2 * (1 - uni_B)) == 0) & \
+                            (torch.sum(binary_mask3 * (1 - uni_B)) == 0) & (torch.sum(binary_mask4 * (1 - uni_B)) == 0):
                         vutils.save_image(
-                            F, filename=aug_dir + "/F_%04d_0.png" % (j))
+                            F, filename=aug_dir + "/F_%04d_0.png" % j)
                         vutils.save_image(
-                            T1, filename=aug_dir + "/T1_%04d_0.png" % (j))
+                            T1, filename=aug_dir + "/T1_%04d_0.png" % j)
                         vutils.save_image(
-                            T1c, filename=aug_dir + "/T1c_%04d_0.png" % (j))
+                            T1c, filename=aug_dir + "/T1c_%04d_0.png" % j)
                         vutils.save_image(
-                            T2, filename=aug_dir + "/T2_%04d_0.png" % (j))
+                            T2, filename=aug_dir + "/T2_%04d_0.png" % j)
 
                         brain_blank = brain * (1 - binary_mask1)
                         out_brain = inp_gen_L1_Cont_Adv(
@@ -256,17 +253,17 @@ with torch.no_grad():
                         F, T1, T1c, T2 = torch.split(
                             out_brain, split_size_or_sections=1, dim=1)
                         vutils.save_image(
-                            F, filename=aug_dir + "/F_%04d_1.png" % (j))
+                            F, filename=aug_dir + "/F_%04d_1.png" % j)
                         vutils.save_image(
-                            T1, filename=aug_dir + "/T1_%04d_1.png" % (j))
+                            T1, filename=aug_dir + "/T1_%04d_1.png" % j)
                         vutils.save_image(
-                            T1c, filename=aug_dir + "/T1c_%04d_1.png" % (j))
+                            T1c, filename=aug_dir + "/T1c_%04d_1.png" % j)
                         vutils.save_image(
-                            T2, filename=aug_dir + "/T2_%04d_1.png" % (j))
+                            T2, filename=aug_dir + "/T2_%04d_1.png" % j)
                         vutils.save_image(
-                            grade_mask1, filename=aug_dir + "/M_%04d_1.png" % (j))
+                            grade_mask1, filename=aug_dir + "/M_%04d_1.png" % j)
                         vutils.save_image(
-                            level_circle1, filename=aug_dir + "/C_%04d_1.png" % (j))
+                            level_circle1, filename=aug_dir + "/C_%04d_1.png" % j)
 
                         brain_blank = brain * (1 - binary_mask2)
                         out_brain = inp_gen_L1_Cont_Adv(
@@ -274,17 +271,17 @@ with torch.no_grad():
                         F, T1, T1c, T2 = torch.split(
                             out_brain, split_size_or_sections=1, dim=1)
                         vutils.save_image(
-                            F, filename=aug_dir + "/F_%04d_2.png" % (j))
+                            F, filename=aug_dir + "/F_%04d_2.png" % j)
                         vutils.save_image(
-                            T1, filename=aug_dir + "/T1_%04d_2.png" % (j))
+                            T1, filename=aug_dir + "/T1_%04d_2.png" % j)
                         vutils.save_image(
-                            T1c, filename=aug_dir + "/T1c_%04d_2.png" % (j))
+                            T1c, filename=aug_dir + "/T1c_%04d_2.png" % j)
                         vutils.save_image(
-                            T2, filename=aug_dir + "/T2_%04d_2.png" % (j))
+                            T2, filename=aug_dir + "/T2_%04d_2.png" % j)
                         vutils.save_image(
-                            grade_mask2, filename=aug_dir + "/M_%04d_2.png" % (j))
+                            grade_mask2, filename=aug_dir + "/M_%04d_2.png" % j)
                         vutils.save_image(
-                            level_circle2, filename=aug_dir + "/C_%04d_2.png" % (j))
+                            level_circle2, filename=aug_dir + "/C_%04d_2.png" % j)
 
                         brain_blank = brain * (1 - binary_mask3)
                         out_brain = inp_gen_L1_Cont_Adv(
@@ -292,17 +289,17 @@ with torch.no_grad():
                         F, T1, T1c, T2 = torch.split(
                             out_brain, split_size_or_sections=1, dim=1)
                         vutils.save_image(
-                            F, filename=aug_dir + "/F_%04d_3.png" % (j))
+                            F, filename=aug_dir + "/F_%04d_3.png" % j)
                         vutils.save_image(
-                            T1, filename=aug_dir + "/T1_%04d_3.png" % (j))
+                            T1, filename=aug_dir + "/T1_%04d_3.png" % j)
                         vutils.save_image(
-                            T1c, filename=aug_dir + "/T1c_%04d_3.png" % (j))
+                            T1c, filename=aug_dir + "/T1c_%04d_3.png" % j)
                         vutils.save_image(
-                            T2, filename=aug_dir + "/T2_%04d_3.png" % (j))
+                            T2, filename=aug_dir + "/T2_%04d_3.png" % j)
                         vutils.save_image(
-                            grade_mask3, filename=aug_dir + "/M_%04d_3.png" % (j))
+                            grade_mask3, filename=aug_dir + "/M_%04d_3.png" % j)
                         vutils.save_image(
-                            level_circle3, filename=aug_dir + "/C_%04d_3.png" % (j))
+                            level_circle3, filename=aug_dir + "/C_%04d_3.png" % j)
 
                         brain_blank = brain * (1 - binary_mask4)
                         out_brain = inp_gen_L1_Cont_Adv(
@@ -310,17 +307,17 @@ with torch.no_grad():
                         F, T1, T1c, T2 = torch.split(
                             out_brain, split_size_or_sections=1, dim=1)
                         vutils.save_image(
-                            F, filename=aug_dir + "/F_%04d_4.png" % (j))
+                            F, filename=aug_dir + "/F_%04d_4.png" % j)
                         vutils.save_image(
-                            T1, filename=aug_dir + "/T1_%04d_4.png" % (j))
+                            T1, filename=aug_dir + "/T1_%04d_4.png" % j)
                         vutils.save_image(
-                            T1c, filename=aug_dir + "/T1c_%04d_4.png" % (j))
+                            T1c, filename=aug_dir + "/T1c_%04d_4.png" % j)
                         vutils.save_image(
-                            T2, filename=aug_dir + "/T2_%04d_4.png" % (j))
+                            T2, filename=aug_dir + "/T2_%04d_4.png" % j)
                         vutils.save_image(
-                            grade_mask4, filename=aug_dir + "/M_%04d_4.png" % (j))
+                            grade_mask4, filename=aug_dir + "/M_%04d_4.png" % j)
                         vutils.save_image(
-                            level_circle4, filename=aug_dir + "/C_%04d_4.png" % (j))
+                            level_circle4, filename=aug_dir + "/C_%04d_4.png" % j)
 
                         j = j+1
                         print(j)

@@ -1,4 +1,6 @@
 import timeit
+
+from augment import Circle_M
 from util import *
 from dataloader import *
 from losses import *
@@ -14,6 +16,7 @@ import torchvision.models as models
 from torch.autograd import Variable
 import torchvision.utils as vutils
 from torch.utils.data import DataLoader
+from dataloader_new import BrainDataset
 import torchvision.transforms as transforms
 import torch.nn as nn
 import torch
@@ -33,17 +36,17 @@ parser.add_argument('--imsize', type=float, default=256,
 parser.add_argument('--start_epoch', type=float, default=0, help='start Epoch')
 parser.add_argument('--end_epoch', type=float, default=200, help='end Epoch')
 parser.add_argument('--data_root', type=str,
-                    default='../data/', help='root of the images')
+                    default='../../../GeNoMe Dataset/BraTS_Dataloader_FINAL', help='root of the images')
 parser.add_argument('--result', type=str,
                     default='./RESULT/')
 parser.add_argument('--resume', type=str,
                     default='./MODEL/')
 opt = parser.parse_args()
 
-if pathlib.Path('%s' % (opt.data_root)).exists() == False:
+if not pathlib.Path('%s' % opt.data_root).exists():
     print("******  Data root is incorrect...******")
 
-if pathlib.Path(opt.result).exists() == False:
+if not pathlib.Path(opt.result).exists():
     pathlib.Path(opt.result).mkdir(parents=True, exist_ok=True)
 
 cudaAvailable = True
@@ -104,11 +107,12 @@ else:
         inp_dis.parameters(), lr=opt.lr, betas=(0.5, 0.999))
 
 
-# transforms_ = [transforms.Resize(256, 256), transforms.ToTensor()]
-# an_dataloader = DataLoader(an_BrainDataset(root=opt.dataroot, mode='Train/Original_full/', transforms_=transforms_),batch_size=opt.batchSize, shuffle=True, num_workers=1)
+# transforms_ = [transforms.Resize(256, 256), transforms.ToTensor()] an_dataloader = DataLoader(an_BrainDataset(
+# root=opt.dataroot, mode='Train/Original_full/', transforms_=transforms_),batch_size=opt.batchSize, shuffle=True,
+# num_workers=1)
 
-abnormal_dataset = an_BrainDataset(
-    root=opt.data_root, mode='Train', data_dir='/Original_full/', aug=None)
+abnormal_dataset = BrainDataset(
+    root=opt.data_root, mode='Train', aug=None)
 abnormal_loader = DataLoader(
     abnormal_dataset, batch_size=opt.batchSize, shuffle=True, num_workers=1)
 
@@ -147,7 +151,8 @@ for epoch in range(opt.start_epoch, opt.end_epoch):
 
             brain = torch.cat((F, T1, T1c, T2), 1)
             brain_blank = brain * (1 - M_WT)
-            # print(brain_blank.shape, M.shape, torch.unique((M)), torch.unique(M_WT),torch.unique(M_ET),torch.unique(M_NET))
+            # print(brain_blank.shape, M.shape, torch.unique((M)), torch.unique(M_WT),torch.unique(M_ET),
+            # torch.unique(M_NET))
             out_brain = inp_gen(brain_blank, M)
 
             # optm_inp_dis.zero_grad()
@@ -183,9 +188,9 @@ for epoch in range(opt.start_epoch, opt.end_epoch):
 
             loss_total += inp_gen_loss.data
 
-    if (epoch) % 10 == 0:
+    if epoch % 10 == 0:
         print("Saving the model ...")
-        model_dir = os.path.join(opt.result, 'model/%d' % (epoch))
+        model_dir = os.path.join(opt.result, 'model/%d' % epoch)
         pathlib.Path(model_dir).mkdir(parents=True, exist_ok=True)
         torch.save(tumor_shape.state_dict(), model_dir + '/tumor_shape.pth')
         torch.save(tumor_grade.state_dict(), model_dir + '/tumor_grade.pth')
