@@ -37,12 +37,13 @@ class BraTSDataset(Dataset):
             add_noise_to_circle_values (tuple, optional): mean and std parameters for gaussian noise on circle values.
             add_noise_to_circle_radius (tuple, optional): mean and std parameters for gaussian noise on circle radiuses.
         """
-        self.tumor_type = tumor_type
+        #self.tumor_type = tumor_type
+        #self.tumor_type = hgg
         self.mode = mode
         self.resize = resize
         self.values_noise_parameters = add_noise_to_circle_values
         self.radiuses_noise_parameters = add_noise_to_circle_radius
-
+        print(fixed_indices)
         if fixed_indices is not None:
             self.t1_dirs = [
                 os.path.join(root, x.replace("*", "t1")) for x in fixed_indices
@@ -60,6 +61,9 @@ class BraTSDataset(Dataset):
                 os.path.join(root, x.replace("*", "seg")) for x in fixed_indices
             ]
         else:
+            self.tumor_type = "hgg-lgg"
+            
+
             self.t1_dirs = sorted(
                 glob.glob(
                     os.path.join(
@@ -119,7 +123,14 @@ class BraTSDataset(Dataset):
                     + "/*.png"
                 )
             )
+        segs = self.mask_dirs
+        segs = list(map(lambda x: x.replace('seg', 't1'), segs))
 
+        
+        not_in_t1 = [i for i in segs if i not in self.t1_dirs]
+        not_in_t1 = list(map(lambda x: x.replace('t1', 'seg'), not_in_t1))
+        
+        self.mask_dirs = [i for i in self.mask_dirs if i not in not_in_t1]
         assert (
             len(self.t1_dirs)
             == len(self.t1ce_dirs)
