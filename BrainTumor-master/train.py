@@ -36,7 +36,7 @@ parser.add_argument('--imsize', type=float, default=256,
 parser.add_argument('--start_epoch', type=float, default=0, help='start Epoch')
 parser.add_argument('--end_epoch', type=float, default=200, help='end Epoch')
 parser.add_argument('--data_root', type=str,
-                    default='../../../GeNoMe Dataset/BraTS_Dataloader_FINAL', help='root of the images')
+                    default='../../../GeNoMe Dataset/BraTS_ABSOLUTE_FINAL', help='root of the images')
 parser.add_argument('--result', type=str,
                     default='./RESULT/')
 parser.add_argument('--resume', type=str,
