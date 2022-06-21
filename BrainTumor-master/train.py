@@ -44,13 +44,16 @@ parser.add_argument('--resume', type=str,
 opt = parser.parse_args()
 
 if not pathlib.Path('%s' % opt.data_root).exists():
+    print(opt.data_root)
     print("******  Data root is incorrect...******")
+
 
 if not pathlib.Path(opt.result).exists():
     pathlib.Path(opt.result).mkdir(parents=True, exist_ok=True)
 
 cudaAvailable = True
 Tensor = torch.cuda.FloatTensor
+
 
 '''
 step == 0: only train tumor_shape network and tumor_grade network

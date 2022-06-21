@@ -14,12 +14,12 @@ from dataloader import *
 from model import Inpaint_generator, Tumor_shape, Tumor_grade
 from util import *
 
-os.environ['CUDA_VISIBLE_DEVICES'] = "5"
+os.environ['CUDA_VISIBLE_DEVICES'] = "0"
 parser = argparse.ArgumentParser()
 parser.add_argument('--step', type=int, default=1,
                     help='0: Tumor shape&level / 1: Tumor inpaint / 2: Whole step')
 parser.add_argument('--dataroot', type=str,
-                    default='../data/Brain_v5', help='root of the images')
+                    default='../../../GeNoMe Dataset/BraTS_Dataloader_FINAL', help='root of the images')
 parser.add_argument('--temp_dataroot', type=str,
                     default='/home/sunho/PycharmProjects/ksh/venv/data/Brain_v5/Train/Normal_slice/', help='root of '
                                                                                                            'the '
