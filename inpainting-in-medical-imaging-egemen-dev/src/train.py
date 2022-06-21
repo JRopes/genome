@@ -123,6 +123,7 @@ def train(root_path: str, config: dict):
             add_noise_to_circle_values=c_noise,
             add_noise_to_circle_radius=r_noise,
         )
+        print(training_dataset)
         training_loader = DataLoader(
             dataset=training_dataset,
             batch_size=batch_size,
