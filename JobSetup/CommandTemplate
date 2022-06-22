@@ -6,11 +6,10 @@ cd genome
 git checkout g_inpaint
 cd JobSetup
 pip install requirements.txt
-
 cd /mnt/nfs-datasets-students
 mkdir ropersjakob
 cd ropersjakob
-gdown
+gdown https://drive.google.com/uc?id=1u6HMc1kP4aKPunSki9jgOmYXh0fI8aB7
 unzip archive.zip
 mkdir BraTS_2021
 cd BraTS_2021
