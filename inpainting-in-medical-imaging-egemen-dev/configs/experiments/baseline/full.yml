@@ -1,6 +1,6 @@
 io:
   absolute_paths: false
-  input_path: "/mnt/nfs-datasets-students/ropersjakob/BraTS_2021/Preprocessed_Data"
+  input_path: ""/mnt/nfs-students/ropersjakob/data/BraTS_2021/Preprocessed_Data""
   indices_path: null
   output_root_path: "results"
   resume_path: null
