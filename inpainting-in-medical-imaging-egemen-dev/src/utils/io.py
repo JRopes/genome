@@ -26,7 +26,7 @@ def mkdir(path: Union[str, pathlib.Path]) -> None:
         path (Union[str, pathlib.Path]): target directory path
     """
     if not os.path.exists(path):
-        os.makedirs(path)
+        os.makedirs(path, exist_ok=True)
 
 
 class NiiFileExtension(Enum):

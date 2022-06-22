@@ -15,9 +15,9 @@ cd BraTS_2021
 mkdir train
 mkdir Preprocessed_Data
 cd train
-mkdir hgg
+mkdir HGG
 cd /mnt/nfs-students/ropersjakob/data
-tar -xvf BraTS2021_Training_Data.tar -C /mnt/nfs-students/ropersjakob/data/BraTS_2021/train/hgg
+tar -xvf BraTS2021_Training_Data.tar -C /mnt/nfs-students/ropersjakob/data/BraTS_2021/train/HGG
 cd /mnt/nfs-students/ropersjakob/genome/inpainting-in-medical-imaging-egemen-dev
 python task.py --preprocess --config="./configs/preprocessing/brats21.yml"
 python task.py --train --config="./configs/experiments/baseline/full.yml"

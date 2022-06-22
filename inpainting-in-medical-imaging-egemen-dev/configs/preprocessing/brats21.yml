@@ -10,7 +10,7 @@ general:
   validation_split_ratio: 0.1
 params:
   include_hgg: true
-  include_lgg: false
+  include_lgg: true
   mask_threshold: 200
   mask_threshold_type: "count"
   step_size: 1
