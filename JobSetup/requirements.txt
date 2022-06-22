@@ -17,3 +17,4 @@ sewar
 piq
 gdown
 pyyaml
+typing
