@@ -18,3 +18,4 @@ piq
 gdown
 pyyaml
 typing
+typing_extensions

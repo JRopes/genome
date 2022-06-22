@@ -2,7 +2,11 @@ import os
 import pathlib
 from glob import glob
 from joblib import Parallel, delayed
-from typing import List, Literal, Optional, Tuple, Union
+
+try:
+    from typing import List, Literal, Optional, Tuple, Union
+except ImportError:
+    from typing_extensions import List, Literal, Optional, Tuple, Union
 
 import numpy as np
 import nibabel as nib
