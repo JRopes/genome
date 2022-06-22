@@ -1,0 +1,21 @@
+git clone https://gitlab.lrz.de/0000000001496F3F/genome.git
+cd genome
+git checkout g_inpaint
+cd JobSetup
+pip install requirements.txt
+mkdir -p ~/.kaggle/
+mv kaggle.json ~/.kaggle/
+chmod 600 ~/.kaggle/kaggle.json
+kaggle datasets download -d dschettler8845/brats-2021-task1
+unzip brats-2021-task1.zip
+mkdir BraTS_2021
+cd BraTS_2021
+mkdir train
+mkdir Preprocessed_Data
+cd train
+mkdir hgg
+cd ../..
+tar -xvf BraTS2021_Training_Data.tar -C BraTS_2021/train/hgg
+cd ../inpainting-in-medical-imaging-egemen-dev
+python task.py --preprocess --config="./configs/preprocessing/brats21.yml"
+python task.py --train --config=".configs/experiments/baseline/full.yml"

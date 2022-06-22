@@ -1,7 +1,7 @@
 io:
   absolute_paths: false
-  input_path: "/media/ata/04947022947017FE/brats/BraTS2021_Training_Data"
-  output_root_path: "/media/ata/04947022947017FE/brats_preprocessed/output"
+  input_path: "../JobSetup/BraTS_2021/train"
+  output_root_path: "../JobSetup/BraTS_2021/Preprocessed_Data"
 utility:
   random_seed: 42
   num_workers: 4
