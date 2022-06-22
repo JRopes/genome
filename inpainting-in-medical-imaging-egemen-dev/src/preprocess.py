@@ -105,21 +105,21 @@ def preprocess(root_path: str, config: dict) -> None:
         
         if include_hgg:
             
-            for x in glob(os.path.join(input_path, "hgg/*")):
+            for x in glob(os.path.join(input_path, "HGG/*")):
                 
                 break
             all_samples.extend(
                 [
                     ("hgg", os.path.basename(x))
                     
-                    for x in glob(os.path.join(input_path, "hgg/*"))
+                    for x in glob(os.path.join(input_path, "HGG/*"))
                 ]
             )
         if include_lgg:
             all_samples.extend(
                 [
                     ("lgg", os.path.basename(x))
-                    for x in glob(os.path.join(input_path, "lgg/*"))
+                    for x in glob(os.path.join(input_path, "HGG/*"))
                 ]
             )
     else:
