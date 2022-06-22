@@ -4,9 +4,9 @@ from glob import glob
 from joblib import Parallel, delayed
 
 try:
-    from typing import List, Literal, Optional, Tuple, Union
+    from typing import Literal, Optional, Tuple, Union
 except ImportError:
-    from typing_extensions import List, Literal, Optional, Tuple, Union
+    from typing_extensions import Literal, Optional, Tuple, Union
 
 import numpy as np
 import nibabel as nib
@@ -105,21 +105,21 @@ def preprocess(root_path: str, config: dict) -> None:
         
         if include_hgg:
             
-            for x in glob(os.path.join(input_path, "HGG/*")):
+            for x in glob(os.path.join(input_path, "hgg/*")):
                 
                 break
             all_samples.extend(
                 [
                     ("hgg", os.path.basename(x))
                     
-                    for x in glob(os.path.join(input_path, "HGG/*"))
+                    for x in glob(os.path.join(input_path, "hgg/*"))
                 ]
             )
         if include_lgg:
             all_samples.extend(
                 [
                     ("lgg", os.path.basename(x))
-                    for x in glob(os.path.join(input_path, "LGG/*"))
+                    for x in glob(os.path.join(input_path, "lgg/*"))
                 ]
             )
     else:
