@@ -1,7 +1,7 @@
 io:
   absolute_paths: false
-  input_path: "../JobSetup/BraTS_2021/train"
-  output_root_path: "../JobSetup/BraTS_2021/Preprocessed_Data"
+  input_path: "/mnt/nfs-datasets-students/ropersjakob/BraTS_2021/train"
+  output_root_path: "/mnt/nfs-datasets-students/ropersjakob/BraTS_2021/Preprocessed_Data"
 utility:
   random_seed: 42
   num_workers: 4
