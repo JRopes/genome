@@ -1,14 +1,13 @@
 cd /mnt/nfs-students
-mkdir ropersjakob
 cd ropersjakob
-git clone https://gitlab.lrz.de/0000000001496F3F/genome.git
 cd genome
-git checkout g_inpaint
 cd JobSetup
-pip install requirements.txt
-cd /mnt/nfs-datasets-students
-mkdir ropersjakob
+pip install -r requirements.txt
+export PATH="/home/ropersjakob15/.local/bin:$PATH"
+cd /mnt/nfs-students
 cd ropersjakob
+mkdir data
+cd data
 gdown https://drive.google.com/uc?id=1u6HMc1kP4aKPunSki9jgOmYXh0fI8aB7
 unzip archive.zip
 mkdir BraTS_2021
@@ -17,8 +16,8 @@ mkdir train
 mkdir Preprocessed_Data
 cd train
 mkdir hgg
-cd /mnt/nfs-datasets-students/ropersjakob
-tar -xvf BraTS2021_Training_Data.tar -C /mnt/nfs-datasets-students/ropersjakob/BraTS_2021/train/hgg
+cd /mnt/nfs-students/ropersjakob/data
+tar -xvf BraTS2021_Training_Data.tar -C /mnt/nfs-students/ropersjakob/data/BraTS_2021/train/hgg
 cd /mnt/nfs-students/ropersjakob/genome/inpainting-in-medical-imaging-egemen-dev
 python task.py --preprocess --config="./configs/preprocessing/brats21.yml"
 python task.py --train --config="./configs/experiments/baseline/full.yml"

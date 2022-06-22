@@ -16,3 +16,4 @@ focal-frequency-loss
 sewar
 piq
 gdown
+pyyaml
