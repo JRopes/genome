@@ -1,0 +1,18 @@
+io:
+  absolute_paths: false
+  input_path: "/mnt/nfs-datasets-students/ropersjakob/BraTS_2021/train"
+  output_root_path: "/mnt/nfs-datasets-students/ropersjakob/BraTS_2021/Preprocessed_Data"
+utility:
+  random_seed: 42
+  num_workers: 4
+general:
+  dataset_type: "brats18" # check it again
+  validation_split_ratio: 0.1
+params:
+  include_hgg: true
+  include_lgg: true
+  mask_threshold: 200
+  mask_threshold_type: "count"
+  step_size: 1
+  indices_interval: null
+  include_tumor_files: ["t1", "t1ce", "t2", "flair", "segmentation"]

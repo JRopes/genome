@@ -10,6 +10,7 @@ import pandas as pd
 
 from src.utils import NiiFileExtension, extract_images_from_nii
 
+import cv2
 
 def preprocess(root_path: str, config: dict) -> None:
     r"""
@@ -63,15 +64,19 @@ def preprocess(root_path: str, config: dict) -> None:
         input_path = os.path.join(root_path, input_path)
         output_root_path = os.path.join(root_path, output_root_path)
 
+
+    include_lgg = False
     assert (
         include_hgg or include_lgg
     ), "there must be atleast one type of tumor included"
 
     all_samples = []
+    
 
     dataset_type = dataset_type.lower()
 
     if dataset_type == "brats20":
+    
         df = pd.read_csv(os.path.join(input_path, "name_mapping.csv"))
         if include_hgg:
             all_samples.extend(
@@ -93,10 +98,16 @@ def preprocess(root_path: str, config: dict) -> None:
             )
         del df
     elif dataset_type == "brats18":
+        
         if include_hgg:
+            
+            for x in glob(os.path.join(input_path, "HGG/*")):
+                
+                break
             all_samples.extend(
                 [
                     ("hgg", os.path.basename(x))
+                    
                     for x in glob(os.path.join(input_path, "HGG/*"))
                 ]
             )
@@ -119,6 +130,7 @@ def preprocess(root_path: str, config: dict) -> None:
         split_index = int(len(all_samples) * validation_split_ratio)
         indices = np.random.permutation(len(all_samples))
         val_ids, train_ids = indices[:split_index], indices[split_index:]
+        
         validation = np.array(all_samples)[val_ids, :].tolist()
         training = np.array(all_samples)[train_ids, :].tolist()
 
@@ -196,7 +208,17 @@ def extract_image_ids(
     segs = nib.load(
         os.path.join(input_path, f"{filename}_{NiiFileExtension.SEG.extension}")
     )
+
     segs = segs.get_fdata()
+    #print(segs.shape)
+    
+    #segs = []
+    #for img in glob(os.path.join(input_path, f"{filename}_seg", "*.png")):
+    #    n= cv2.imread(img)
+    #    segs.append(n)
+    #segs = np.array(segs)
+    #print(segs.shape)
+    
 
     if indices_interval is not None:
         assert (
