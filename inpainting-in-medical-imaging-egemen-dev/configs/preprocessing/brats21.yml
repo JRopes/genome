@@ -1,7 +1,7 @@
 io:
   absolute_paths: false
   input_path: "/mnt/nfs-students/ropersjakob/data/BraTS_2021/train"
-  output_root_path: "/mnt/nfs-students/ropersjakob/data/BraTS_2021/Preprocessed_Data"
+  output_root_path: "/mnt/nfs-students/ropersjakob/data/Preprocessed_Data"
 utility:
   random_seed: 42
   num_workers: 4
