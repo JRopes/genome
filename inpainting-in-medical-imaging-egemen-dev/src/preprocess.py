@@ -119,7 +119,7 @@ def preprocess(root_path: str, config: dict) -> None:
             all_samples.extend(
                 [
                     ("lgg", os.path.basename(x))
-                    for x in glob(os.path.join(input_path, "HGG/*"))
+                    for x in glob(os.path.join(input_path, "LGG/*"))
                 ]
             )
     else:
