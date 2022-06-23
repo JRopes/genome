@@ -4,7 +4,7 @@ io:
   output_root_path: "/mnt/nfs-students/ropersjakob/data/Preprocessed_Data"
 utility:
   random_seed: 42
-  num_workers: 4
+  num_workers: 1
 general:
   dataset_type: "brats18" # check it again
   validation_split_ratio: 0.1
