@@ -150,6 +150,7 @@ def preprocess(root_path: str, config: dict) -> None:
             ]
         )
 
+        """
         Parallel(n_jobs=num_workers, verbose=10)(
             delayed(extract_tumor_images)(
                 input_path=input_path
@@ -165,6 +166,20 @@ def preprocess(root_path: str, config: dict) -> None:
                 tumor_type=tumor_type,
             )
             for (tumor_type, var_output_root_path, filename) in all_samples
+        """
+        extract_tumor_images(
+                input_path=input_path
+                if dataset_type == "brats20"
+                else os.path.join(input_path, tumor_type.upper()),
+                output_root_path=var_output_root_path,
+                filename=filename,
+                mask_threshold=mask_threshold,
+                mask_threshold_type=mask_threshold_type,
+                include_tumor_files=include_tumor_files,
+                step_size=step_size,
+                indices_interval=indices_interval,
+                tumor_type=tumor_type,
+        ) for (tumor_type, var_output_root_path, filename) in all_samples
         )
     else:
         Parallel(n_jobs=num_workers, verbose=10)(
