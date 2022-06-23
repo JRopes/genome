@@ -167,7 +167,8 @@ def preprocess(root_path: str, config: dict) -> None:
             )
             for (tumor_type, var_output_root_path, filename) in all_samples
         """
-        extract_tumor_images(
+        for (tumor_type, var_output_root_path, filename) in all_samples:
+            extract_tumor_images(
                 input_path=input_path
                 if dataset_type == "brats20"
                 else os.path.join(input_path, tumor_type.upper()),
@@ -179,8 +180,8 @@ def preprocess(root_path: str, config: dict) -> None:
                 step_size=step_size,
                 indices_interval=indices_interval,
                 tumor_type=tumor_type,
-        ) for (tumor_type, var_output_root_path, filename) in all_samples
-        )
+            )
+        
     else:
         Parallel(n_jobs=num_workers, verbose=10)(
             delayed(extract_tumor_images)(
