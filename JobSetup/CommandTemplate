@@ -21,3 +21,23 @@ tar -xvf BraTS2021_Training_Data.tar -C /mnt/nfs-students/ropersjakob/data/BraTS
 cd /mnt/nfs-students/ropersjakob/genome/inpainting-in-medical-imaging-egemen-dev
 python task.py --preprocess --config="./configs/preprocessing/brats21.yml"
 python task.py --train --config="./configs/experiments/baseline/full.yml"
+
+
+
+
+
+--- NEW ---
+cd /mnt/nfs-students
+rm -r ropersjakob
+mkdir ropersjakob
+cd ropersjakob
+git clone https://github.com/JRopes/genome.git
+cd genome/JobSetup
+pip install -r requirements.txt
+export PATH="/home/ropersjakob15/.local/bin:$PATH"
+cd /mnt/nfs-students/ropersjakob
+mkdir data
+gdown https://drive.google.com/uc?id=1toDWvlpskuz_yB9eibCA2WibNHQ_azHE
+unzip output.zip
+cd /mnt/nfs-students/ropersjakob/genome/inpainting-in-medical-imaging-egemen-dev
+python task.py --train --config="./configs/experiments/baseline/full.yml"
