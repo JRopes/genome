@@ -1,8 +1,9 @@
 io:
   absolute_paths: false
-  input_path: "/media/ata/04947022947017FE/brats_preprocessed/output"
+  #input_path: "/media/ata/04947022947017FE/brats_preprocessed/output"
+  input_path: "../data"
   indices_path: null
-  output_root_path: "results"
+  output_root_path: "../results"
   resume_path: null
 utility:
   random_seed: 42
