@@ -227,8 +227,9 @@ class BaselineExperiment(BaseTrainer):
             shape_seg.train()
             shape_opt = self.optimizers.get("shape")
             shape_opt.zero_grad()
-
-            p_m_shape = shape_seg(torch.cat((t_m_brain, t_m_circles), 1))
+              
+            p_m_shape = shape_seg(torch.cat((t_m_brain, t_m_circles, t_t1, t_t1ce, t_t2, t_flair), 1), in_channels=6) ## adding original images too
+            #p_m_shape = shape_seg(torch.cat((t_m_brain, t_m_circles), 1)) # papers code
             shape_loss = self.l1_loss(p_m_shape, t_m_shape)
 
             shape_loss.backward()
