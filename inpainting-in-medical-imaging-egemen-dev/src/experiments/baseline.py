@@ -54,7 +54,7 @@ class BaselineExperiment(BaseTrainer):
             cfg = self.params["shape_segmenter"]
             self.networks.add(
                 id="shape",
-                network=BaselineShapeSegmenter(6).to(self.device),
+                network=BaselineShapeSegmenter(2).to(self.device),
                 additional_info=cfg,
             )
             self.optimizers.add(
@@ -87,7 +87,7 @@ class BaselineExperiment(BaseTrainer):
             cfg = self.params["grade_segmenter"]
             self.networks.add(
                 id="grade",
-                network=BaselineGradeSegmenter().to(self.device),
+                network=BaselineGradeSegmenter(6).to(self.device), # changed to 6 in_channels
                 additional_info=cfg,
             )
             self.optimizers.add(
@@ -228,8 +228,8 @@ class BaselineExperiment(BaseTrainer):
             shape_opt = self.optimizers.get("shape")
             shape_opt.zero_grad()
               
-            p_m_shape = shape_seg(torch.cat((t_m_brain, t_m_circles, t_t1, t_t1ce, t_t2, t_flair), 1)) ## adding original images too
-            #p_m_shape = shape_seg(torch.cat((t_m_brain, t_m_circles), 1)) # papers code
+            #p_m_shape = shape_seg(torch.cat((t_m_brain, t_m_circles, t_t1, t_t1ce, t_t2, t_flair), 1)) ## adding original images too
+            p_m_shape = shape_seg(torch.cat((t_m_brain, t_m_circles), 1)) # papers code
             shape_loss = self.l1_loss(p_m_shape, t_m_shape)
 
             shape_loss.backward()
@@ -252,7 +252,8 @@ class BaselineExperiment(BaseTrainer):
             grade_opt = self.optimizers.get("grade")
             grade_opt.zero_grad()
 
-            p_m_grade = grade_seg(torch.cat((t_m_shape, t_m_circles), 1))
+            #p_m_grade = grade_seg(torch.cat((t_m_shape, t_m_circles), 1))
+            p_m_grade = grade_seg(torch.cat((t_m_brain, t_m_circles, t_t1, t_t1ce, t_t2, t_flair), 1))
             grade_loss = self.l1_loss(p_m_grade, t_m_grade_mapped)
 
             grade_loss.backward()
@@ -368,8 +369,8 @@ class BaselineExperiment(BaseTrainer):
             shape_seg = self.networks.get("shape")
             shape_seg.eval()
 
-            #p_m_shape = shape_seg(torch.cat((t_m_brain, t_m_circles), 1))
-            p_m_shape = shape_seg(torch.cat((t_m_brain, t_m_circles, t_t1, t_t1ce, t_t2, t_flair), 1))
+            p_m_shape = shape_seg(torch.cat((t_m_brain, t_m_circles), 1))
+            #p_m_shape = shape_seg(torch.cat((t_m_brain, t_m_circles, t_t1, t_t1ce, t_t2, t_flair), 1))
             shape_loss = self.l1_loss(p_m_shape, t_m_shape)
             results["shape_loss"] = shape_loss.item()
 
@@ -388,7 +389,8 @@ class BaselineExperiment(BaseTrainer):
             grade_seg = self.networks.get("grade")
             grade_seg.eval()
 
-            p_m_grade = grade_seg(torch.cat((t_m_shape, t_m_circles), 1))
+            #p_m_grade = grade_seg(torch.cat((t_m_shape, t_m_circles), 1))
+            p_m_grade = grade_seg(torch.cat((t_m_brain, t_m_circles, t_t1, t_t1ce, t_t2, t_flair), 1))
             grade_loss = self.l1_loss(p_m_grade, t_m_grade_mapped)
             results["grade_loss"] = grade_loss.item()
 

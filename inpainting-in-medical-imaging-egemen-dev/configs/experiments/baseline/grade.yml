@@ -1,8 +1,10 @@
 io:
   absolute_paths: false
-  input_path: "resources/data/brats20"
+  #input_path: "resources/data/brats20"
+  #output_root_path: "results"
+  input_path: "/mnt/nfs-datasets-students/brats21/"
   indices_path: null
-  output_root_path: "results"
+  output_root_path: "../../results_grade"
   resume_path: null
 utility:
   random_seed: 42
