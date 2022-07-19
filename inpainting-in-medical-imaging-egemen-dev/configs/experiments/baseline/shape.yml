@@ -23,7 +23,7 @@ general:
   experiment_type: "baseline"
   epochs: 100
   batch_size: 32
-  save_epoch_interval: 10
+  save_epoch_interval: 5
 params:
   shape_segmenter:
     enabled: true
