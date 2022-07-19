@@ -10,7 +10,7 @@ nibabel
 albumentations
 notebook
 tqdm
-matplotlib
+#matplotlib
 seaborn
 focal-frequency-loss
 sewar
