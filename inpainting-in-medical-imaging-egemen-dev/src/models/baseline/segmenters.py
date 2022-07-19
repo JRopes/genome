@@ -6,7 +6,7 @@ from .base import *
 class BaselineShapeSegmenter(nn.Module):
     def __init__(self, in_channels=2):
         super(BaselineShapeSegmenter, self).__init__()
-
+        print(in_channels)
         # Down sampling
         model = [
             Conv(
